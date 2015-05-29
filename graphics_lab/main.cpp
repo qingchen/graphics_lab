@@ -2,24 +2,23 @@
   
 // 用于注册的窗口类名
 LPCWSTR g_szClassName = L"myWindowClass";
-  
+
 void Paint(HWND hwnd) 
 {
     // paint struct 绘图结构体，存储目标窗口可以绘图的客户端区域(client area)
     PAINTSTRUCT ps;
     HDC hdc;   // DC(可画图的内存对象) 的句柄
-    HPEN hpen; // 画笔
- 
+	RECT rc;
+	GetClientRect(hwnd, &rc);
     // 通过窗口句柄获取该窗口的 DC
     hdc = BeginPaint(hwnd, &ps);
-    // 创建画笔
-    hpen = CreatePen(PS_SOLID, 1, RGB(255,0,0));
-    // DC 选择画笔
-    SelectObject(hdc,hpen);
-    // (画笔)从初始点移动到 50,50
-    MoveToEx(hdc, 50, 50, NULL);
-    // (画笔)从初始点画线到 100,100
-    LineTo(hdc, 150, 100);
+	for (int y = 0; y < 400; y++)
+	{
+		for (int x = 0; x < 300; x++)
+		{
+			SetPixel(hdc, x, y, RGB((BYTE)(x/300.0*255), (BYTE)(y/400.0*255), 0));
+		}
+	}
  
     EndPaint(hwnd, &ps);
 }
