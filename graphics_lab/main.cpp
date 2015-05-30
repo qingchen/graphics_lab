@@ -12,11 +12,11 @@ void Paint(HWND hwnd)
 	GetClientRect(hwnd, &rc);
     // 通过窗口句柄获取该窗口的 DC
     hdc = BeginPaint(hwnd, &ps);
-	for (int y = 0; y < 400; y++)
+	for (int y = 0; y < 300; y++)
 	{
-		for (int x = 0; x < 300; x++)
+		for (int x = 0; x < 400; x++)
 		{
-			SetPixel(hdc, x, y, RGB((BYTE)(x/300.0*255), (BYTE)(y/400.0*255), 0));
+			SetPixel(hdc, x, y, RGB((BYTE)(x/400.0*255), (BYTE)(y/300.0*255), 0));
 		}
 	}
  
