@@ -1,4 +1,3 @@
-#include "vector3.h"
 #include "ray.h"
 
 struct IntersectResult
@@ -7,7 +6,7 @@ struct IntersectResult
 	double distance;
 	Vector3 position;
 	Vector3 normal;
-	IntersectResult(bool _hit = false, double _distance = 0, Vector3 _position = zero, Vector3 _normal = zero):hit(_hit), distance(_distance), position(_position), normal(_normal){}
+	IntersectResult(bool _hit = false, double _distance = 0, Vector3 _position = Vector3(0, 0, 0), Vector3 _normal = Vector3(0, 0, 0)):hit(_hit), distance(_distance), position(_position), normal(_normal){}
 };
 
 class Sphere

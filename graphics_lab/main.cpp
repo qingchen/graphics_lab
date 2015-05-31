@@ -1,5 +1,8 @@
 #include <windows.h>
-  
+#include "perspectivecamera.h"
+#include <iostream>
+
+using namespace std;
 // 用于注册的窗口类名
 LPCWSTR g_szClassName = L"myWindowClass";
 
@@ -12,11 +15,28 @@ void Paint(HWND hwnd)
 	GetClientRect(hwnd, &rc);
     // 通过窗口句柄获取该窗口的 DC
     hdc = BeginPaint(hwnd, &ps);
-	for (int y = 0; y < 300; y++)
+	PerspectiveCamera camera(Vector3(0, 10, 5), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
+	Sphere sphere(Vector3(0, 10, -10), 10);
+	camera.Initialize();
+	double sx, sy;
+	Ray ray;
+	IntersectResult result;
+	int depth;
+	for (int y = 0; y < 256; y++)
 	{
-		for (int x = 0; x < 400; x++)
+		sy = 1 - y / 256.0;
+		for (int x = 0; x < 256; x++)
 		{
-			SetPixel(hdc, x, y, RGB((BYTE)(x/400.0*255), (BYTE)(y/300.0*255), 0));
+			sx = x / 256.0;
+			ray = camera.generateRay(sx, sy);
+			result = sphere.intersect(ray);
+			if (result.hit)
+			{
+				//cout << x << " " << y << endl;
+				depth = 255 - min((result.distance/20)*255, 255);
+				SetPixel(hdc, x, y, RGB((BYTE)(depth), (BYTE)(depth), depth));
+			}
+			
 		}
 	}
  
@@ -93,7 +113,7 @@ HWND CreateMyWindow(HINSTANCE hInstance, int nCmdShow)
         g_szClassName,
         TEXT("我的窗口名称"),
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, // 出现坐标 x,y 默认分配 窗口宽 400 高 300
+        CW_USEDEFAULT, CW_USEDEFAULT, 256, 256, // 出现坐标 x,y 默认分配 窗口宽 400 高 300
         NULL, NULL, hInstance, NULL);
   
     if(hwnd == NULL)
