@@ -1,4 +1,8 @@
 #include <math.h>
+#ifndef VECTOR3_H
+#define VECTOR3_H
+
+
 
 class Vector3
 {
@@ -30,3 +34,4 @@ public:
 
 };
 Vector3  zero = Vector3(0, 0, 0);
+#endif

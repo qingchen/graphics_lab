@@ -1,5 +1,9 @@
 #include <windows.h>
 #include "perspectivecamera.h"
+#include "sphere.h"
+#include "checkermaterial.h"
+#include "color.h"
+#include "phongmaterial.h"
 #include <iostream>
 
 using namespace std;
