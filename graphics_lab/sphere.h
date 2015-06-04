@@ -1,19 +1,11 @@
 #include "ray.h"
 #include "vector3.h"
+#include "intersectresult.h"
+#include "geometry.h"
 #ifndef SPHERE_H
 #define SPHERE_H
 
-
-struct IntersectResult
-{
-	bool hit;
-	double distance;
-	Vector3 position;
-	Vector3 normal;
-	IntersectResult(bool _hit = false, double _distance = 0, Vector3 _position = Vector3(0, 0, 0), Vector3 _normal = Vector3(0, 0, 0)):hit(_hit), distance(_distance), position(_position), normal(_normal){}
-};
-
-class Sphere
+class Sphere:public Geometry
 {
 public:
 	Vector3 center;
@@ -30,13 +22,14 @@ public:
 			double discr = dotv * dotv - a0;
 			if (discr >= 0)
 			{
-				result.hit = true;
+				result.geometry = this;
 				result.distance = -dotv - sqrt(discr);
 				result.position = ray.getPoint(result.distance);
 				result.normal = result.position.subtract(center).normalize();
+				return result;
 			}
 		}
-		return result;
+		return result.noHit();
 	}
 };
 #endif

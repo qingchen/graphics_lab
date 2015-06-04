@@ -24,8 +24,9 @@ void Paint(HWND hwnd)
 	camera.Initialize();
 	double sx, sy;
 	Ray ray;
-	IntersectResult result;
+	//IntersectResult result;
 	int depth;
+	int r, g, b;
 	for (int y = 0; y < 256; y++)
 	{
 		sy = 1 - y / 256.0;
@@ -33,12 +34,15 @@ void Paint(HWND hwnd)
 		{
 			sx = x / 256.0;
 			ray = camera.generateRay(sx, sy);
-			result = sphere.intersect(ray);
-			if (result.hit)
+			IntersectResult result = sphere.intersect(ray);
+			if (result.geometry)
 			{
-				//cout << x << " " << y << endl;
-				depth = 255 - min((result.distance/20)*255, 255);
-				SetPixel(hdc, x, y, RGB((BYTE)(depth), (BYTE)(depth), depth));
+				depth = 255 - min((result.distance/255)*255, 255);
+				Color color = result.geometry->material->sample(ray, result.position, result.normal);
+				r = min(color.r * 255, 255);
+				g = min(color.g * 255, 255);
+				b = min(color.b * 255, 255);
+				SetPixel(hdc, x, y, RGB((BYTE)(depth), (BYTE)(depth), (BYTE)(depth)));
 			}
 			
 		}
