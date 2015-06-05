@@ -1,7 +1,8 @@
-#include "vector3.h"
-#include "ray.h"
 #ifndef PERSPECTIVECAMERA_H
 #define PERSPECTIVECAMERA_H
+#include "vector3.h"
+#include "ray.h"
+
 
 const double Pi = 3.14159;
 class PerspectiveCamera

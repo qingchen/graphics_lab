@@ -4,6 +4,7 @@
 #include "checkermaterial.h"
 #include "color.h"
 #include "phongmaterial.h"
+#include "plane.h"
 #include <iostream>
 
 using namespace std;
@@ -122,7 +123,7 @@ HWND CreateMyWindow(HINSTANCE hInstance, int nCmdShow)
         g_szClassName,
         TEXT("我的窗口名称"),
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 256, 256, // 出现坐标 x,y 默认分配 窗口宽 400 高 300
+        CW_USEDEFAULT, CW_USEDEFAULT, 400, 400, // 出现坐标 x,y 默认分配 窗口宽 400 高 300
         NULL, NULL, hInstance, NULL);
   
     if(hwnd == NULL)

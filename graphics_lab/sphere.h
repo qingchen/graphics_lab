@@ -1,9 +1,10 @@
+#ifndef SPHERE_H
+#define SPHERE_H
 #include "ray.h"
 #include "vector3.h"
 #include "intersectresult.h"
 #include "geometry.h"
-#ifndef SPHERE_H
-#define SPHERE_H
+
 
 class Sphere:public Geometry
 {
@@ -11,7 +12,7 @@ public:
 	Vector3 center;
 	double radius, sqr_radius;
 	Sphere(const Vector3 &_center, double _radius):center(_center), radius(_radius), sqr_radius(_radius*_radius){}
-	IntersectResult intersect(Ray ray)
+	virtual IntersectResult intersect(const Ray &ray)
 	{
 		Vector3 v = ray.origin.subtract(center);
 		double a0 = v.sqrLength() - sqr_radius;
@@ -29,7 +30,7 @@ public:
 				return result;
 			}
 		}
-		return result.noHit();
+		return noHit;
 	}
 };
 #endif
