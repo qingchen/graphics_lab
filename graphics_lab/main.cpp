@@ -20,7 +20,8 @@ void Paint(HWND hwnd)
     // 通过窗口句柄获取该窗口的 DC
     hdc = BeginPaint(hwnd, &ps);
 	PerspectiveCamera camera(Vector3(0, 10, 5), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
-	Sphere sphere(Vector3(0, 10, -10), 10);
+	Sphere *sphere = new Sphere(Vector3(0, 10, -10), 10);
+	sphere->material = new PhongMaterial(red, white, 16);
 	camera.Initialize();
 	double sx, sy;
 	Ray ray;
@@ -34,15 +35,15 @@ void Paint(HWND hwnd)
 		{
 			sx = x / 256.0;
 			ray = camera.generateRay(sx, sy);
-			IntersectResult result = sphere.intersect(ray);
+			IntersectResult result = sphere->intersect(ray);
 			if (result.geometry)
 			{
-				depth = 255 - min((result.distance/255)*255, 255);
+				//depth = 255 - min((result.distance/10)*255, 255);
 				Color color = result.geometry->material->sample(ray, result.position, result.normal);
 				r = min(color.r * 255, 255);
 				g = min(color.g * 255, 255);
 				b = min(color.b * 255, 255);
-				SetPixel(hdc, x, y, RGB((BYTE)(depth), (BYTE)(depth), (BYTE)(depth)));
+				SetPixel(hdc, x, y, RGB((BYTE)(r), (BYTE)(g), (BYTE)(b)));
 			}
 			
 		}
