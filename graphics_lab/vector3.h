@@ -20,5 +20,5 @@ public:
 	Vector3 cross(const Vector3 &lhs) const {return Vector3(-z * lhs.y + y * lhs.z, z * lhs.x - x * lhs.z, -y * lhs.x + x * lhs.y);}
 
 };
-Vector3  zero = Vector3(0, 0, 0);
+Vector3  zero;
 #endif

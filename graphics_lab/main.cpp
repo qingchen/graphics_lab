@@ -5,12 +5,33 @@
 #include "color.h"
 #include "phongmaterial.h"
 #include "plane.h"
+#include "union.h"
 #include <iostream>
 
 using namespace std;
 // 用于注册的窗口类名
 LPCWSTR g_szClassName = L"myWindowClass";
 
+Color RaytraceRecursive(Geometry *geo, const Ray &ray, double max_reflect)
+{
+	IntersectResult result = geo->intersect(ray);
+	if (result.geometry)
+	{
+		double reflectiveness = result.geometry->material->reflectiveness;
+		Color color = result.geometry->material->sample(ray, result.position, result.normal);
+		color = color.multiply(1 - reflectiveness);
+		if (reflectiveness > 0 && max_reflect > 0)
+		{
+			Vector3 r = result.normal.multiply(-2 * result.normal.dot(ray.direction)).add(ray.direction);
+			Ray ray_tmp(result.position, r);
+			Color reflected_color = RaytraceRecursive(geo, ray_tmp, max_reflect - 1);
+			color = color.add(reflected_color.multiply(reflectiveness));
+		}
+		return color;
+	}
+	else
+		return black;
+}
 void Paint(HWND hwnd) 
 {
     // paint struct 绘图结构体，存储目标窗口可以绘图的客户端区域(client area)
@@ -20,14 +41,22 @@ void Paint(HWND hwnd)
 	GetClientRect(hwnd, &rc);
     // 通过窗口句柄获取该窗口的 DC
     hdc = BeginPaint(hwnd, &ps);
-	PerspectiveCamera camera(Vector3(0, 10, 5), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
-	Sphere *sphere = new Sphere(Vector3(0, 10, -10), 10);
-	sphere->material = new PhongMaterial(red, white, 16);
+	Plane *plane = new Plane(Vector3(0, 1, 0), 0);
+	Sphere *sphere1 = new Sphere(Vector3(-10, 10, -10), 10);
+	Sphere *sphere2 = new Sphere(Vector3(10, 10, -10), 10);
+	plane->material = new CheckerMaterial(0.1, 0.5);
+	sphere1->material = new PhongMaterial(red, white, 16, 0.25);
+	sphere2->material = new PhongMaterial(blue, white, 16, 0.25);
+	PerspectiveCamera camera(Vector3(0, 5, 15), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
+	Union uni;
+	uni.geometrys.push_back(plane);
+	uni.geometrys.push_back(sphere1);
+	uni.geometrys.push_back(sphere2);
 	camera.Initialize();
 	double sx, sy;
 	Ray ray;
 	//IntersectResult result;
-	int depth;
+	//int depth;
 	int r, g, b;
 	for (int y = 0; y < 256; y++)
 	{
@@ -36,11 +65,12 @@ void Paint(HWND hwnd)
 		{
 			sx = x / 256.0;
 			ray = camera.generateRay(sx, sy);
-			IntersectResult result = sphere->intersect(ray);
+			IntersectResult result = uni.intersect(ray);
 			if (result.geometry)
 			{
 				//depth = 255 - min((result.distance/10)*255, 255);
-				Color color = result.geometry->material->sample(ray, result.position, result.normal);
+				//Color color = result.geometry->material->sample(ray, result.position, result.normal);
+				Color color = RaytraceRecursive(&uni, ray, 3);
 				r = min(color.r * 255, 255);
 				g = min(color.g * 255, 255);
 				b = min(color.b * 255, 255);
