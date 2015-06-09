@@ -6,6 +6,7 @@
 #include "phongmaterial.h"
 #include "plane.h"
 #include "union.h"
+#include "directionallight.h"
 #include <iostream>
 
 using namespace std;
@@ -41,6 +42,7 @@ void Paint(HWND hwnd)
 	GetClientRect(hwnd, &rc);
     // 通过窗口句柄获取该窗口的 DC
     hdc = BeginPaint(hwnd, &ps);
+#if 0
 	Plane *plane = new Plane(Vector3(0, 1, 0), 0);
 	Sphere *sphere1 = new Sphere(Vector3(-10, 10, -10), 10);
 	Sphere *sphere2 = new Sphere(Vector3(10, 10, -10), 10);
@@ -53,10 +55,18 @@ void Paint(HWND hwnd)
 	uni.geometrys.push_back(sphere1);
 	uni.geometrys.push_back(sphere2);
 	camera.Initialize();
-	double sx, sy;
-	Ray ray;
+#endif
+	Union uni;
+	uni.geometrys.push_back(new Plane(Vector3(0, 1, 0), 0));
+	uni.geometrys.push_back(new Plane(Vector3(0, 0, 1), -50));
+	uni.geometrys.push_back(new Plane(Vector3(1, 0, 0), -20));
+	uni.geometrys.push_back(new Sphere(Vector3(0, 10, -10), 10));
+	DirectionalLight light(white, Vector3(-1.75, -2, -1.5));
+	PerspectiveCamera camera(Vector3(0, 10, 10), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
 	//IntersectResult result;
 	//int depth;
+	double sx, sy;
+	Ray ray;
 	int r, g, b;
 	for (int y = 0; y < 256; y++)
 	{
@@ -68,9 +78,17 @@ void Paint(HWND hwnd)
 			IntersectResult result = uni.intersect(ray);
 			if (result.geometry)
 			{
+				Color color = black;
+				LightSample lightsample = light.sample(&uni, result.position);
+				if (lightsample != zero)
+				{
+					double NdotL = result.normal.dot(lightsample.L);
+					if (NdotL >= 0)
+						color = color.add(lightsample.EL.multiply(NdotL));
+				}
 				//depth = 255 - min((result.distance/10)*255, 255);
 				//Color color = result.geometry->material->sample(ray, result.position, result.normal);
-				Color color = RaytraceRecursive(&uni, ray, 3);
+				//Color color = RaytraceRecursive(&uni, ray, 3);
 				r = min(color.r * 255, 255);
 				g = min(color.g * 255, 255);
 				b = min(color.b * 255, 255);

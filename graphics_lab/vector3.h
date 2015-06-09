@@ -18,7 +18,13 @@ public:
 	Vector3 divide(double f){double inv = 1 / f; return Vector3(x * inv, y * inv, z * inv);}
 	double dot(const Vector3 &lhs) const {return x * lhs.x + y * lhs.y + z * lhs.z;}
 	Vector3 cross(const Vector3 &lhs) const {return Vector3(-z * lhs.y + y * lhs.z, z * lhs.x - x * lhs.z, -y * lhs.x + x * lhs.y);}
-
+	bool operator==(const Vector3 &rhs)
+	{
+		return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
+	}
+	bool operator!=(const Vector3 &rhs)
+	{
+		return !(*this == rhs);
+	}
 };
-Vector3  zero;
 #endif
