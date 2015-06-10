@@ -10,8 +10,8 @@ public:
 	Vector3 normal;
 	double d;
 	Vector3 position;
-	Plane(const Vector3 &_normal, double _d):normal(_normal), d(_d){}
-	void initialize(){position = normal.multiply(d);}
+	Plane(const Vector3 &_normal, double _d):normal(_normal), d(_d), position(normal.multiply(d)){}
+	//void initialize(){position = normal.multiply(d);}
 	virtual IntersectResult intersect(const Ray &ray)
 	{
 		double a = ray.direction.dot(normal);

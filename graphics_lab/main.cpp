@@ -56,24 +56,29 @@ void Paint(HWND hwnd)
 	uni.geometrys.push_back(sphere2);
 	camera.Initialize();
 #endif
+#if 1
 	Union uni;
+	uni.geometrys.push_back(new Sphere(Vector3(0, 10, -10), 10));
 	uni.geometrys.push_back(new Plane(Vector3(0, 1, 0), 0));
 	uni.geometrys.push_back(new Plane(Vector3(0, 0, 1), -50));
 	uni.geometrys.push_back(new Plane(Vector3(1, 0, 0), -20));
-	uni.geometrys.push_back(new Sphere(Vector3(0, 10, -10), 10));
 	DirectionalLight light(white, Vector3(-1.75, -2, -1.5));
 	PerspectiveCamera camera(Vector3(0, 10, 10), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
+	camera.Initialize();
+#endif
 	//IntersectResult result;
 	//int depth;
 	double sx, sy;
 	Ray ray;
 	int r, g, b;
-	for (int y = 0; y < 256; y++)
+	for (int y = 0; y <= 256; y++)
 	{
 		sy = 1 - y / 256.0;
-		for (int x = 0; x < 256; x++)
+		for (int x = 0; x <= 256; x++)
 		{
 			sx = x / 256.0;
+			if (sx == 0 && sy == 0)
+				cout << "test" << endl;
 			ray = camera.generateRay(sx, sy);
 			IntersectResult result = uni.intersect(ray);
 			if (result.geometry)
