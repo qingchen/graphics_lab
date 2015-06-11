@@ -7,6 +7,7 @@
 #include "plane.h"
 #include "union.h"
 #include "directionallight.h"
+#include "PointLight.h"
 #include <iostream>
 
 using namespace std;
@@ -62,7 +63,9 @@ void Paint(HWND hwnd)
 	uni.geometrys.push_back(new Plane(Vector3(0, 1, 0), 0));
 	uni.geometrys.push_back(new Plane(Vector3(0, 0, 1), -50));
 	uni.geometrys.push_back(new Plane(Vector3(1, 0, 0), -20));
-	DirectionalLight light(white, Vector3(-1.75, -2, -1.5));
+	vector<Light*> lights;
+	//lights.push_back(new DirectionalLight(white, Vector3(-1.75, -2, -1.5)));
+	lights.push_back(new PointLight(white.multiply(2000), Vector3(30, 40, 20)));
 	PerspectiveCamera camera(Vector3(0, 10, 10), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
 	camera.Initialize();
 #endif
@@ -77,19 +80,20 @@ void Paint(HWND hwnd)
 		for (int x = 0; x <= 256; x++)
 		{
 			sx = x / 256.0;
-			if (sx == 0 && sy == 0)
-				cout << "test" << endl;
 			ray = camera.generateRay(sx, sy);
 			IntersectResult result = uni.intersect(ray);
 			if (result.geometry)
 			{
 				Color color = black;
-				LightSample lightsample = light.sample(&uni, result.position);
-				if (lightsample != zero)
+				for (int i = 0; i < lights.size(); i++)
 				{
-					double NdotL = result.normal.dot(lightsample.L);
-					if (NdotL >= 0)
-						color = color.add(lightsample.EL.multiply(NdotL));
+					LightSample lightsample = lights[i]->sample(&uni, result.position);
+					if (lightsample != zero)
+					{
+						double NdotL = result.normal.dot(lightsample.L);
+						if (NdotL >= 0)
+							color = color.add(lightsample.EL.multiply(NdotL));
+					}
 				}
 				//depth = 255 - min((result.distance/10)*255, 255);
 				//Color color = result.geometry->material->sample(ray, result.position, result.normal);
