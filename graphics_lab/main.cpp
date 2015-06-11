@@ -8,6 +8,7 @@
 #include "union.h"
 #include "directionallight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include <iostream>
 
 using namespace std;
