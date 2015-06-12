@@ -66,7 +66,8 @@ void Paint(HWND hwnd)
 	uni.geometrys.push_back(new Plane(Vector3(1, 0, 0), -20));
 	vector<Light*> lights;
 	//lights.push_back(new DirectionalLight(white, Vector3(-1.75, -2, -1.5)));
-	lights.push_back(new PointLight(white.multiply(2000), Vector3(30, 40, 20)));
+	//lights.push_back(new PointLight(white.multiply(2000), Vector3(30, 40, 20)));
+	lights.push_back(new SpotLight(white.multiply(2000), Vector3(30, 40, 20), Vector3(-1, -1, -1), 20, 30, 0.5));
 	PerspectiveCamera camera(Vector3(0, 10, 10), Vector3(0, 0, -1), Vector3(0, 1, 0), 90);
 	camera.Initialize();
 #endif
